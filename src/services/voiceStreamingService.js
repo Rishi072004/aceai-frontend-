@@ -33,7 +33,7 @@ export class VoiceStreamingService {
   connect(token, chatId, mode, jobContext) {
     return new Promise((resolve, reject) => {
       try {
-        const apiUrl = (import.meta.env?.VITE_API_BASE_URL) || (import.meta.env?.VITE_API_URL) || 'http://localhost:5000';
+        const apiUrl = import.meta.env?.VITE_API_URL || 'http://localhost:5000';
         const wsUrl = apiUrl.replace(/^http/, 'ws') + '/api/voice-stream';
         
         console.log('🔌 Connecting to voice stream WebSocket...');

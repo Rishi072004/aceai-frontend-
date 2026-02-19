@@ -2,6 +2,10 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
+// DEBUG: Log what Vite is reading from .env
+console.log('🔍 VITE_API_URL from .env:', import.meta.env.VITE_API_URL);
+console.log('🔍 All VITE env vars:', import.meta.env);
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -50,7 +54,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyToken = async () => {
     try {
-      const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5000';
+      const API_BASE_URL = import.meta.env?.VITE_API_URL;
       const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,

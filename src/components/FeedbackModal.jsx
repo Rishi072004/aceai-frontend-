@@ -23,10 +23,7 @@ const FeedbackModal = () => {
   const [errors, setErrors] = useState({ email: "", feedback: "" });
   const { token, user } = useAuth();
 
-  const API_BASE_URL = (import.meta.env?.VITE_API_BASE_URL) ||
-    (typeof window !== 'undefined'
-      ? `http://${window.location.hostname}:5000`
-      : 'http://localhost:5000');
+  const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     // lock background scroll when modal open

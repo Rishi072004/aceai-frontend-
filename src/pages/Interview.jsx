@@ -17,10 +17,7 @@ const MODE_DISPLAY = {
   strict: { label: "Strict", accent: "#f59e0b" },
 };
 
-const API_BASE_URL = (import.meta.env?.VITE_API_BASE_URL) ||
-  (typeof window !== 'undefined'
-    ? `http://${window.location.hostname}:5000`
-    : 'http://localhost:5000');
+const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5000';
 
 const vertexShader = `
 attribute vec2 uv;

@@ -4,10 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ChevronLeft, Download, Share2, MoreVertical, Star, TrendingUp, AlertCircle, CheckCircle, AlertTriangle } from "lucide-react";
 import "./Feedback.css";
 
-const API_BASE_URL = (import.meta.env?.VITE_API_BASE_URL) ||
-  (typeof window !== 'undefined'
-    ? `http://${window.location.hostname}:5000`
-    : 'http://localhost:5000');
+const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5000';
 
 const Feedback = () => {
   const { chatId } = useParams();
