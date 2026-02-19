@@ -1,0 +1,10 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AceAi logo">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <rect rx="128" ry="128" width="512" height="512" fill="url(#g)"/>
+  <path d="M256 120c-6 0-11 3-13 8l-96 256c-4 11 4 20 15 20h48c6 0 11-3 13-8l18-50h96l18 50c2 5 7 8 13 8h48c11 0 19-9 15-20l-96-256c-2-5-7-8-13-8h-56Zm0 86 28 78h-56l28-78Z" fill="#fff"/>
+</svg>

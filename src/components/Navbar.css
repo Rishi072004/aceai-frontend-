@@ -1,0 +1,236 @@
+/* Navbar Component Styles */
+.navbar-header {
+  position: relative;
+  z-index: 30;
+  padding:4rem 4rem;
+  right:110px;
+  bottom: 60px;
+  /* width: 70px; */ 
+}
+
+.navbar-container {
+  max-width: 80rem;
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem;
+
+}
+
+/* Logo */
+.navbar-logo-wrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 1.5rem;
+  z-index: 1;
+}
+
+.navbar-logo-img {
+  width: 150px !important;
+  height: 150px !important;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(138, 92, 246, 0.6));
+  cursor: pointer;
+  position: relative;
+  left: 250px;
+  transition: transform 0.3s ease;
+}
+
+.navbar-logo-img:hover {
+  transform: scale(1.05);
+  /* width: 290px !important; */
+}
+
+/* Floating Pill Navbar */
+.navbar-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 11rem;
+  background: rgba(25, 20, 45, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(138, 92, 246, 0.3);
+  border-radius: 999px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 
+              0 0 0 1px rgba(138, 92, 246, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Nav Links */
+.navbar-link {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.navbar-link:hover {
+  color: white;
+  background: rgba(138, 92, 246, 0.15);
+  box-shadow: 0 0 20px rgba(138, 92, 246, 0.3);
+}
+
+/* User Badge */
+.navbar-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: rgba(138, 92, 246, 0.2);
+  border-radius: 999px;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.navbar-user-icon {
+  width: 1rem;
+  height: 1rem;
+  color: #c4b5fd;
+}
+
+/* Dark Pill Button */
+.navbar-btn-dark {
+  padding: 0.625rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: rgba(40, 35, 60, 0.8);
+  border: 1.5px solid rgba(138, 92, 246, 0.4);
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.navbar-user-credits {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  font-size: 0.78rem;
+  color: #e0f2fe;
+}
+
+.navbar-credits-icon {
+  width: 14px;
+  height: 14px;
+  color: #22c55e;
+}
+
+.navbar-btn-dark:hover {
+  background: rgba(50, 45, 75, 0.9);
+  border-color: rgba(138, 92, 246, 0.6);
+  box-shadow: 0 0 25px rgba(138, 92, 246, 0.4),
+              inset 0 0 20px rgba(138, 92, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Gradient Border Pill Button */
+.navbar-btn-gradient {
+  padding: 0.625rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: rgba(25, 20, 45, 0.95);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  background-clip: padding-box;
+  white-space: nowrap;
+}
+
+.navbar-btn-gradient::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 999px;
+  padding: 3px;
+  background: linear-gradient(135deg, 
+    #667eea 0%, 
+    #764ba2 20%, 
+    #f093fb 40%, 
+    #f5576c 60%, 
+    #feca57 80%, 
+    #667eea 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  background-size: 300% 100%;
+  animation: gradientFlow 4s linear infinite;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+.navbar-btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 35px rgba(138, 92, 246, 0.6),
+              0 0 60px rgba(245, 87, 108, 0.3),
+              inset 0 0 20px rgba(138, 92, 246, 0.1);
+}
+
+.navbar-btn-gradient:hover::before {
+  animation: gradientFlow 2s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .navbar-pill {
+    gap: 0.375rem;
+    padding: 0.625rem 0.875rem;
+  }
+  
+  .navbar-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9375rem;
+  }
+  
+  .navbar-btn-dark,
+  .navbar-btn-gradient {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-header {
+    padding: 1rem 1.5rem;
+  }
+  
+  .navbar-logo-img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .navbar-pill {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+  }
+}

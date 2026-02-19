@@ -1,0 +1,11 @@
+@import "./Login.css";
+
+/* Register-specific helpers and font tuning */
+.auth-grid-2 { display:grid; grid-template-columns: 1fr; gap:10px; }
+@media (min-width: 600px){ .auth-grid-2 { grid-template-columns: 1fr 1fr; } }
+
+.auth-req-list { display:flex; flex-direction:column; gap:6px; margin-top: 8px; }
+.auth-req { display:flex; align-items:center; gap:6px; font-size: 0.9rem; color: var(--muted); }
+.auth-req .ok { color: hsl(142 70% 60%); }
+.auth-req .bad { color: hsl(0 75% 65%); }
+.auth-req .muted { color: var(--muted); }
