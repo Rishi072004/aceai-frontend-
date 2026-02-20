@@ -55,11 +55,10 @@ const Pricing = () => {
     // Normalize plan ID to match backend (STARTER, VALUE, UNLIMITED)
     const normalizedPlanId = planId.toUpperCase();
 
-    // In development, default to a fake payment flow so you can
-    // test credits/interviews without going through Razorpay.
-    // Set VITE_ENABLE_FAKE_PAYMENTS="false" to force real Razorpay in dev.
-    const isDev = import.meta.env.DEV;
-    const enableFakePayments = isDev && import.meta.env.VITE_ENABLE_FAKE_PAYMENTS !== 'false';
+    // Enable fake payment flow for testing without Razorpay.
+    // Set VITE_ENABLE_FAKE_PAYMENTS="true" to skip Razorpay in any environment.
+    // Set VITE_ENABLE_FAKE_PAYMENTS="false" to force real Razorpay.
+    const enableFakePayments = import.meta.env.VITE_ENABLE_FAKE_PAYMENTS === 'true';
 
     if (enableFakePayments) {
       setLoading(true);
@@ -85,7 +84,7 @@ const Pricing = () => {
         }
 
         toast({
-          title: "Plan activated (dev mode)",
+          title: "Plan activated (test mode)",
           description: "Credits added without real payment.",
           variant: "default",
         });
@@ -94,11 +93,11 @@ const Pricing = () => {
           navigate('/interview', { state: { starterMode: true, planType: 'starter' } });
         }
       } catch (err) {
-        console.error('Dev payment error', err);
+        console.error('Test payment error', err);
         toast({
           variant: "destructive",
-          title: "Dev payment failed",
-          description: err.message || "Could not activate plan in dev mode.",
+          title: "Test payment failed",
+          description: err.message || "Could not activate plan in test mode.",
         });
       } finally {
         setLoading(false);

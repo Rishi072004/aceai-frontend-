@@ -22,6 +22,21 @@
   }
 }
 
+@keyframes innerOrbPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 60px rgba(99,102,241,0.5), inset 0 0 30px rgba(255,255,255,0.15);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 80px rgba(99,102,241,0.7), inset 0 0 40px rgba(255,255,255,0.2);
+  }
+}
+
+.orb-pulse {
+  animation: innerOrbPulse 2s ease-in-out infinite;
+}
+
 .ai-assistant-orb.orb-active {
   animation: orbPulse 1.5s ease-in-out infinite;
 }

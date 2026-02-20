@@ -7,7 +7,7 @@ import ResumeUpload from "@/components/ResumeUpload";
 import * as voiceInterviewService from "@/services/voiceInterviewService";
 import { voiceStreamingService } from "@/services/voiceStreamingService";
 import { motion } from "framer-motion";
-import { Color, Mesh, Program, Renderer, Triangle } from "ogl";
+// WebGL orb removed for performance
 import "./Interview.css";
 import "./PremiumInterviewRoom.css";
 
@@ -19,154 +19,8 @@ const MODE_DISPLAY = {
 
 const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5000';
 
-const vertexShader = `
-attribute vec2 uv;
-attribute vec2 position;
-varying vec2 vUv;
-void main() {
-  vUv = uv;
-  gl_Position = vec4(position, 0.0, 1.0);
-}
-`;
-
-const fragmentShader = `
-precision highp float;
-uniform float uTime;
-uniform vec3 uColor;
-uniform vec3 uResolution;
-uniform vec2 uMouse;
-uniform float uAmplitude;
-uniform float uSpeed;
-varying vec2 vUv;
-void main() {
-  float mr = min(uResolution.x, uResolution.y);
-  vec2 uv = (vUv * 2.0 - 1.0) * uResolution.xy / mr;
-  float d = -uTime * 0.5 * uSpeed;
-  float a = 0.0;
-  for (float i = 0.0; i < 10.0; ++i)
- {
-    a += cos(i - d - a * uv.x);
-    d += sin(uv.y * i + a);
-  }
-  vec3 col = vec3(cos(uv * vec2(d, a)) * 0.6 + 0.4, cos(a + d) * 0.5 + 0.5);
-  col = cos(col * cos(vec3(d, a, 2.5)) * 0.5 + 0.5) * uColor;
-  gl_FragColor = vec4(col, 1.0);
-}
-`;
-
-const Iridescence = ({ color = [0.3, 0.6, 1], speed = 0.1, amplitude = 0.1 }) => {
-  const containerRef = useRef(null);
-  const programRef = useRef(null);
-  const amplitudeRef = useRef(amplitude);
-  const speedRef = useRef(speed);
-
-  useEffect(() => {
-    const parent = containerRef.current;
-    if (!parent) return undefined;
-
-    const renderer = new Renderer({ dpr: 1, alpha: true });
-    const { gl } = renderer;
-    gl.clearColor(0, 0, 0, 0);
-    const geometry = new Triangle(gl);
-    const program = new Program(gl, {
-      vertex: vertexShader,
-      fragment: fragmentShader,
-      uniforms: {
-        uTime: { value: 0 },
-        uColor: { value: new Color(...color) },
-        uResolution: { value: new Color(1, 1, 1) },
-        uMouse: { value: new Float32Array([0.5, 0.5]) },
-        uAmplitude: { value: amplitudeRef.current },
-        uSpeed: { value: speedRef.current },
-      },
-    });
-    programRef.current = program;
-    const mesh = new Mesh(gl, { geometry, program });
-    let frame = 0;
-
-    const resize = () => {
-      const rect = parent.getBoundingClientRect();
-      const width = Math.max(1, rect.width);
-      const height = Math.max(1, rect.height);
-      renderer.setSize(width, height);
-      program.uniforms.uResolution.value = new Color(width, height, width / height);
-    };
-
-    resize();
-    gl.canvas.style.width = "100%";
-    gl.canvas.style.height = "100%";
-    gl.canvas.style.borderRadius = "50%";
-    gl.canvas.style.overflow = "hidden";
-    gl.canvas.style.background = "transparent";
-    gl.canvas.style.display = "block";
-    parent.appendChild(gl.canvas);
-
-    const render = (t) => {
-      program.uniforms.uTime.value = t * 0.001;
-      program.uniforms.uAmplitude.value = amplitudeRef.current;
-      program.uniforms.uSpeed.value = speedRef.current;
-      renderer.render({ scene: mesh });
-      frame = requestAnimationFrame(render);
-    };
-
-    frame = requestAnimationFrame(render);
-    window.addEventListener("resize", resize);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("resize", resize);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
-      if (gl.canvas.parentNode === parent) {
-        parent.removeChild(gl.canvas);
-      }
-    };
-  }, [color]);
-
-  useEffect(() => {
-    amplitudeRef.current = amplitude;
-    speedRef.current = speed;
-  }, [amplitude, speed]);
-
-  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
-};
-
+// Simple CSS-based orb - replaces heavy WebGL animation for better performance
 const AssistantOrb = ({ glow, isActive }) => {
-  // const { levelRef, ready, error, start } = useAudioLevel();
-  // Fallback stub values to keep UI rendering while audio-level hook is disabled.
-  const levelRef = useRef(0);
-  const ready = true;
-  const error = null;
-  const start = () => {};
-  const [level, setLevel] = useState(0);
-  // Toggle between static fallback and animated WebGL orb
-  const [useFallbackOrb] = useState(false);
-
-  useEffect(() => {
-    start();
-  }, [start]);
-
-  useEffect(() => {
-    let raf = 0;
-    let last = 0;
-    const update = (ts) => {
-      if (ts - last > 80) {
-        setLevel((prev) => {
-          const next = prev + (levelRef.current - prev) * 0.08;
-          return Math.abs(next - prev) < 0.0015 ? prev : next;
-        });
-        last = ts;
-      }
-      raf = requestAnimationFrame(update);
-    };
-    raf = requestAnimationFrame(update);
-    return () => cancelAnimationFrame(raf);
-  }, [levelRef]);
-
-  const amplitude = 0.12 + level * 0.65;
-  const speed = 0.5 + level * 0.25;
-  const scale = 1 + level * 0.08;
-  const glowOpacity = 0.38 + level * 3.2;
-
   return (
     <div
       className={`ai-assistant-orb ${isActive ? 'orb-active' : ''}`}
@@ -179,47 +33,25 @@ const AssistantOrb = ({ glow, isActive }) => {
         boxShadow: glow,
         transition: "box-shadow 0.6s ease, transform 0.25s ease",
         borderRadius: "50%",
-        padding:"0px",
-        margin:"0px",
-        // background: "transparent",
+        padding: "0px",
+        margin: "0px",
       }}
     >
-      {useFallbackOrb ? (
-        <div
-          style={{
-            position: "relative",
-            width: "90%",
-            aspectRatio: "1 / 1",
-            borderRadius: "50%",
-            overflow: "hidden",
-            transform: `scale(${scale})`,
-            transition: "transform 0.25s ease, box-shadow 0.4s ease",
-            background: "radial-gradient(circle at 30% 30%, rgba(99,102,241,0.7), rgba(59,130,246,0.5) 50%, rgba(24,24,27,0.0) 85%)",
-            boxShadow: "0 0 30px rgba(99,102,241,0.3), inset 0 0 18px rgba(255,255,255,0.1)",
-          }}
-        />
-      ) : (
-        <div
-          style={{
-            position: "relative",
-            width: "90%",
-            aspectRatio: "1 / 1",
-            borderRadius: "50%",
-            overflow: "hidden",
-            transform: `scale(${scale})`,
-            transition: "transform 0.25s ease, box-shadow 0.4s ease",
-            boxShadow: "0 0 40px rgba(99,102,241,0.35), inset 0 0 30px rgba(255,255,255,0.08)",
-          }}
-        >
-          <Iridescence amplitude={amplitude} speed={speed} color={[0.3, 0.6, 1]} />
-        </div>
-      )}
-      {!ready && !error && (
-        <span style={{ fontSize: "0.75rem", color: "#dbeafe", marginTop: "8px" }}>Listening...</span>
-      )}
-      {error && (
-        <span style={{ fontSize: "0.75rem", color: "#fecdd3", marginTop: "8px" }}>Mic access needed</span>
-      )}
+      <div
+        className={isActive ? 'orb-pulse' : ''}
+        style={{
+          position: "relative",
+          width: "90%",
+          aspectRatio: "1 / 1",
+          borderRadius: "50%",
+          overflow: "hidden",
+          transition: "transform 0.25s ease, box-shadow 0.4s ease",
+          background: "radial-gradient(circle at 30% 30%, rgba(99,102,241,0.8), rgba(59,130,246,0.6) 50%, rgba(139,92,246,0.4) 70%, transparent 90%)",
+          boxShadow: isActive 
+            ? "0 0 60px rgba(99,102,241,0.5), inset 0 0 30px rgba(255,255,255,0.15)"
+            : "0 0 30px rgba(99,102,241,0.3), inset 0 0 18px rgba(255,255,255,0.1)",
+        }}
+      />
     </div>
   );
 };
@@ -2086,6 +1918,7 @@ const getAssistantGlow = () => {
           jobDescription: jobProfile.jobDescription || '',
           company: jobProfile.company || '',
           conversation: conversationHistory,  // CRITICAL: Add full conversation
+          currentQuestion: currentQuestion || '',  // For repeat/clarify requests
           batchCount
         })
       });
