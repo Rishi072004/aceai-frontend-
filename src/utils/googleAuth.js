@@ -99,35 +99,50 @@ export const getGoogleIdToken = async (clientId) => {
     };
 
     const startPrompt = (useFedcm, label) => {
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: (response) => handleCredential(response, label),
-        use_fedcm_for_prompt: useFedcm,
-      });
-      window.google.accounts.id.prompt((notification) => handleNotification(notification, label));
+      try {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: (response) => handleCredential(response, label),
+          use_fedcm_for_prompt: useFedcm,
+          cancel_on_tap_outside: false,
+        });
+        window.google.accounts.id.prompt((notification) => {
+          // Handle FedCM abort errors - fall back immediately
+          if (notification?.g === 'fedcm_error' || notification?.g === 'user_cancel') {
+            console.warn('[Google OAuth] FedCM error, trying fallback...');
+            if (!triedFallback && useFedcm) {
+              triedFallback = true;
+              clearFallbackTimer();
+              setTimeout(() => startPrompt(false, 'fallback-immediate'), 100);
+              return;
+            }
+          }
+          handleNotification(notification, label);
+        });
+      } catch (err) {
+        // Catch FedCM AbortError and retry without FedCM
+        if (err?.name === 'AbortError' || err?.message?.includes('aborted')) {
+          console.warn('[Google OAuth] FedCM aborted, trying fallback...', err?.message);
+          if (!triedFallback) {
+            triedFallback = true;
+            clearFallbackTimer();
+            setTimeout(() => startPrompt(false, 'fallback-abort'), 100);
+            return;
+          }
+        }
+        finalizeError(`Google sign-in error: ${err?.message || 'Unknown error'}`);
+      }
     };
 
-    // Start with FedCM prompt first.
-    startPrompt(true, 'fedcm');
+    // Start with FedCM disabled - it's causing issues for many users
+    // FedCM is still experimental and has compatibility issues
+    startPrompt(false, 'standard');
 
-    // If the prompt never results in a credential or a skip/dismiss, retry once without FedCM.
+    // Timeout fallback
     fallbackTimer = setTimeout(() => {
-      if (settled || triedFallback) return;
-      triedFallback = true;
-      try {
-        if (window.google?.accounts?.id?.cancel) {
-          try { window.google.accounts.id.cancel(); } catch (e) {}
-        }
-        startPrompt(false, 'fallback');
-        fallbackTimer = setTimeout(() => {
-          if (!settled) {
-            finalizeError('Google sign-in timed out.');
-          }
-        }, 6000);
-      } catch (e) {
-        console.warn('[Google OAuth] fallback prompt failed to initialize:', e?.message || e);
-        finalizeError('Google sign-in could not be started.');
+      if (!settled) {
+        finalizeError('Google sign-in timed out. Please try again or use email login.');
       }
-    }, 6000);
+    }, 15000);
   });
 };
